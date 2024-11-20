@@ -4,6 +4,7 @@ import { getTeacher } from "@/app/datasources/api/getTeacher";
 import { TableSkeleton } from "@/app/components/Skeletons/TableSkeleton";
 
 import styles from "./page.module.css";
+import { ScheduleForm } from "@/app/components/ScheduleForm/ScheduleForm";
 
 export default async function TeacherSchedulePage({
   params,
@@ -15,12 +16,13 @@ export default async function TeacherSchedulePage({
   return (
     <div className={styles.teacherSchedule}>
       <h4>
-        User: {teacher?.name} id: {id}
-      </h4>      
-      <Suspense fallback={<TableSkeleton/>}>
+        User: {teacher?.name}
+      </h4>
+      <Suspense fallback={<TableSkeleton />}>
         <ScheduleTable schedules={teacher?.schedules} />
       </Suspense>
-      {teacher?.schedules?.length === 0 && <div>No tienes registros</div>}
+      {teacher?.schedules?.length === 0 && <div>No tienes registros</div>}      
+      <ScheduleForm id={id}/>      
     </div>
   );
 }

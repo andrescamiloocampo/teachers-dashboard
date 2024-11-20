@@ -16,15 +16,15 @@ export const TeachersTable = ({ teachers=[] }: TableProps): ReactElement => {
   }
 
   return (
-    <table className="table">
+    <table className="table">      
       <thead>
         <tr>
           <th scope="col">ID</th>
           <th scope="col">NIT</th>
           <th scope="col">Name</th>
           <th scope="col">LastName</th>
-          <th scope="col">In</th>
-          <th scope="col">Out</th>
+          <th scope="col">Last In</th>
+          <th scope="col">Last Out</th>
         </tr>
       </thead>
       <tbody>

@@ -1,0 +1,16 @@
+.tag{
+    display: flex;
+    width: fit-content;    
+    padding: 0 5px;
+    border-radius: 10px;
+}
+
+.negative{        
+    background: rgb(209, 73, 73);
+    color: white;
+}
+
+.positive{
+    background: rgb(106, 212, 106);  
+    color: white;  
+}

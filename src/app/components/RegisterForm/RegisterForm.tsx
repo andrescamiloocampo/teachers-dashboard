@@ -14,8 +14,8 @@ export const Register = (): ReactElement => {
         try {
             const credential = await navigator.credentials.get({
                 publicKey: {
-                    challenge: Uint8Array.from("random-string", c => c.charCodeAt(0)), // Reemplaza con un desafío generado por tu servidor
-                    allowCredentials: [], // Puedes definir credenciales específicas aquí si las tienes
+                    challenge: Uint8Array.from("random-string", c => c.charCodeAt(0)), 
+                    allowCredentials: [],
                     timeout: 60000,
                     userVerification: "preferred",
                 },
@@ -32,18 +32,18 @@ export const Register = (): ReactElement => {
     const handleForm = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
   
-      // Verifica que el target sea un formulario
+     
       const form = e.currentTarget as HTMLFormElement;
       if (!form) {
           console.error("El evento no está asociado a un formulario válido.");
           return;
       }
   
-      // Solicitar autenticación biométrica
+      
       const isAuthenticated = await requestAuthentication();
       if (!isAuthenticated) return;
   
-      // Crear objeto FormData con el formulario
+      
       const formData = new FormData(form);
       const data: TeacherM = Object.fromEntries(formData);
       console.log("Form data:", data);

@@ -9,7 +9,7 @@ interface TableProps {
 }
 
 export const TeachersTable = ({ teachers = [] }: TableProps): ReactElement => {
-  const [searchId, setSearchId] = useState(""); // Estado para la barra de búsqueda
+  const [searchId, setSearchId] = useState(""); 
   const router = useRouter();
 
   const handleTeacherById = (id: number) => {
@@ -20,7 +20,6 @@ export const TeachersTable = ({ teachers = [] }: TableProps): ReactElement => {
     setSearchId(event.target.value);
   };
 
-  // Filtrar la lista de profesores por ID
   const filteredTeachers = searchId
     ? teachers.filter((teacher) =>
         teacher.nit.toString().includes(searchId.trim())
@@ -29,7 +28,7 @@ export const TeachersTable = ({ teachers = [] }: TableProps): ReactElement => {
 
   return (
     <div>
-      {/* Barra de búsqueda */}
+   
       <div className={styles.searchBar}>
         <input
           type="text"
@@ -39,7 +38,7 @@ export const TeachersTable = ({ teachers = [] }: TableProps): ReactElement => {
           className={styles.searchInput}
         />
       </div>
-      {/* Tabla */}
+     
       <table className="table">
         <thead>
           <tr>

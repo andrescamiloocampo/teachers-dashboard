@@ -18,7 +18,7 @@ export const ScheduleForm = ({ id }: ScheduleFormM): ReactElement => {
     try {
       const credential = await navigator.credentials.get({
         publicKey: {
-          challenge: Uint8Array.from("random-string", c => c.charCodeAt(0)), // Reemplaza con un desafío generado por tu servidor
+          challenge: Uint8Array.from("random-string", c => c.charCodeAt(0)), 
           allowCredentials: [],
           timeout: 60000,
           userVerification: "preferred",
@@ -36,18 +36,18 @@ export const ScheduleForm = ({ id }: ScheduleFormM): ReactElement => {
   const handleForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Verifica que el evento tenga como target un formulario válido
+    
     const form = e.currentTarget as HTMLFormElement;
     if (!form || form.nodeName !== "FORM") {
       console.error("El evento no está asociado a un formulario válido.");
       return;
     }
 
-    // Solicitar autenticación biométrica
+    
     const isAuthenticated = await requestAuthentication();
     if (!isAuthenticated) return;
 
-    // Procesar datos del formulario
+   
     const formData = new FormData(form);
     const data: Schedule = Object.fromEntries(formData);
     const { k, out } = data;

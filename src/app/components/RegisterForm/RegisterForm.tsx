@@ -1,126 +1,137 @@
-'use client'
+'use client';
 import type { ReactElement } from "react";
-import { createTeacher,type TeacherM } from "@/app/server/teachers/createTeacher";
-import {v4 as uuid} from 'uuid';
-import { useVisitorData } from "@fingerprintjs/fingerprintjs-pro-react";
+import { createTeacher, type TeacherM } from "@/app/server/teachers/createTeacher";
+import { v4 as uuid } from "uuid";
 
-export const Register = ():ReactElement => {
+export const Register = (): ReactElement => {
 
-    const {isLoading, error, data, getData} = useVisitorData(
-        {extendedResult: true},
-        {immediate: true}
-    )
+    const requestAuthentication = async (): Promise<boolean> => {
+        if (!window.PublicKeyCredential) {
+            alert("Your browser does not support WebAuthn.");
+            return false;
+        }
 
-    const handleForm = async(e:React.FormEvent<HTMLFormElement>) => {                
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        const data:TeacherM = Object.fromEntries(formData);
-        console.log(data);
-        const {k,...rest} = data;
-        const response = await createTeacher({
-            ...rest,
-            id: uuid(),
-            schedules: []
-        })
-        console.log(response);
-    }
+        try {
+            const credential = await navigator.credentials.get({
+                publicKey: {
+                    challenge: Uint8Array.from("random-string", c => c.charCodeAt(0)), // Reemplaza con un desafío generado por tu servidor
+                    allowCredentials: [], // Puedes definir credenciales específicas aquí si las tienes
+                    timeout: 60000,
+                    userVerification: "preferred",
+                },
+            });
+            console.log("Authenticated:", credential);
+            return true;
+        } catch (err) {
+            console.error("Authentication failed:", err);
+            alert("Authentication failed. Please try again.");
+            return false;
+        }
+    };
 
-  return (
-    <div>
-        <button onClick={() => getData({ignoreCache: true})}>
-        Reload data
-      </button>
-      <p>VisitorId: {isLoading ? 'Loading...' : data?.visitorId}</p>
-      <p>Full visitor data:</p>
-      <pre>{error ? error.message : JSON.stringify(data, null, 2)}</pre>
-      <div className="row mb-4">
-        <div className="col-lg-8 mx-auto text-center">
-          <h1 className="display-6">Teachers Register</h1>
-        </div>
-      </div>
-      <div className="row">
-        <div className="col-lg-6 mx-auto">
-          <div className="card ">
-            <div className="card-header">
-              <div className="tab-content">
-                <div
-                  id="credit-card"
-                  className="tab-pane fade show active pt-3"
-                >
-                  <form onSubmit={handleForm}>
-                    <div className="form-group">                      
-                      <label htmlFor="nit">
-                        <h6>ID Number</h6>
-                      </label>
-                      <input
-                        type="text"
-                        name="nit"
-                        placeholder="Ingrese identificacion"
-                        required
-                        className="form-control "
-                      />
-                    </div>
-                    <div className="form-group">                      
-                      <label htmlFor="name">
-                        <h6>Name</h6>
-                      </label>
-                      <div className="input-group">                
-                        <input
-                          type="text"
-                          name="name"
-                          placeholder="Ingrese nombre"
-                          className="form-control "
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">                      
-                      <label htmlFor="lastName">
-                        <h6>Last Name</h6>
-                      </label>
-                      <div className="input-group">                        
-                        <input
-                          type="text"
-                          name="lastName"
-                          placeholder="Ingrese apellido"
-                          className="form-control "
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="form-group">
-                      {" "}
-                      <label htmlFor="area">
-                        <h6>Area</h6>
-                      </label>
-                      <div className="input-group">
-                        {" "}
-                        <input
-                          type="text"
-                          name="area"
-                          placeholder="Ingrese area"
-                          className="form-control "
-                          required
-                        />
-                      </div>
-                    </div>
-                    <div className="row">
-                      <div className="col-sm-8"></div>
-                    </div>
-                    <button
-                      type="submit"
-                      className="subscribe btn btn-dark btn-block shadow-sm mt-4 w-100"
-                    >
-                      {" "}
-                      Registrarse{" "}
-                    </button>
-                  </form>
+    const handleForm = async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+  
+      // Verifica que el target sea un formulario
+      const form = e.currentTarget as HTMLFormElement;
+      if (!form) {
+          console.error("El evento no está asociado a un formulario válido.");
+          return;
+      }
+  
+      // Solicitar autenticación biométrica
+      const isAuthenticated = await requestAuthentication();
+      if (!isAuthenticated) return;
+  
+      // Crear objeto FormData con el formulario
+      const formData = new FormData(form);
+      const data: TeacherM = Object.fromEntries(formData);
+      console.log("Form data:", data);
+  
+      const { k, ...rest } = data;
+      const response = await createTeacher({
+          ...rest,
+          id: uuid(),
+          schedules: [],
+      });
+      console.log("Teacher created:", response);
+  };
+
+    return (
+        <div>
+            <div className="row mb-4">
+                <div className="col-lg-8 mx-auto text-center">
+                    <h1 className="display-6">Teachers Register</h1>
                 </div>
-              </div>
             </div>
-          </div>
+            <div className="row">
+                <div className="col-lg-6 mx-auto">
+                    <div className="card ">
+                        <div className="card-header">
+                            <div className="tab-content">
+                                <div id="credit-card" className="tab-pane fade show active pt-3">
+                                    <form onSubmit={handleForm}>
+                                        <div className="form-group">
+                                            <label htmlFor="nit">
+                                                <h6>ID Number</h6>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="nit"
+                                                placeholder="Ingrese identificación"
+                                                required
+                                                className="form-control"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="name">
+                                                <h6>Name</h6>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="name"
+                                                placeholder="Ingrese nombre"
+                                                required
+                                                className="form-control"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="lastName">
+                                                <h6>Last Name</h6>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="lastName"
+                                                placeholder="Ingrese apellido"
+                                                required
+                                                className="form-control"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor="area">
+                                                <h6>Area</h6>
+                                            </label>
+                                            <input
+                                                type="text"
+                                                name="area"
+                                                placeholder="Ingrese área"
+                                                required
+                                                className="form-control"
+                                            />
+                                        </div>
+                                        <button
+                                            type="submit"
+                                            className="subscribe btn btn-dark btn-block shadow-sm mt-4 w-100"
+                                        >
+                                            Registrarse
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
-}
+    );
+};

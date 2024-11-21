@@ -1,3 +1,15 @@
 .tableRow{
     cursor: pointer;
 }
+
+.searchBar {
+    margin-bottom: 1rem;
+  }
+  
+  .searchInput {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }

@@ -54,8 +54,9 @@ export const Register = (): ReactElement => {
           id: uuid(),
           schedules: [],
       });
-      console.log("Teacher created:", response);
-  };
+      console.log("Teacher created:" , response);
+  };    
+
 
     return (
         <div>

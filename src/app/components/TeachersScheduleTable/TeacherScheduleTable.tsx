@@ -43,8 +43,8 @@ export const ScheduleTable = ({
 
             return (
               <tr key={index}>
-                <td>{schedule.in}</td>
-                <td>{schedule.out}</td>
+                <td>{schedule.in.toString()}</td>
+                <td>{schedule.out.toString()}</td>
                 <td>
                   <span className={`${styles.tag} ${isCompleted ? styles.positive : styles.negative}`}>
                     {isCompleted ? "Jornada completada" : "Jornada en progreso"}

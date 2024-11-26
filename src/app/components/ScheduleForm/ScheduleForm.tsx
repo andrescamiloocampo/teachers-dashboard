@@ -3,7 +3,6 @@
 import { type ReactElement } from "react";
 import type { ScheduleFormM } from "./ScheduleForm.model";
 import { updateTeacher } from "@/app/server/teachers/updateTeacher";
-import { Schedule } from "@/app/models/schedule.model";
 
 export const ScheduleForm = ({ id }: ScheduleFormM): ReactElement => {
   const utcDate = new Date(Date.now());
@@ -18,7 +17,7 @@ export const ScheduleForm = ({ id }: ScheduleFormM): ReactElement => {
     try {
       const credential = await navigator.credentials.get({
         publicKey: {
-          challenge: Uint8Array.from("random-string", c => c.charCodeAt(0)), 
+          challenge: Uint8Array.from("random-string", (c) => c.charCodeAt(0)),
           allowCredentials: [],
           timeout: 60000,
           userVerification: "preferred",
@@ -36,21 +35,25 @@ export const ScheduleForm = ({ id }: ScheduleFormM): ReactElement => {
   const handleForm = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    
     const form = e.currentTarget as HTMLFormElement;
     if (!form || form.nodeName !== "FORM") {
       console.error("El evento no está asociado a un formulario válido.");
       return;
     }
 
-    
     const isAuthenticated = await requestAuthentication();
     if (!isAuthenticated) return;
 
-   
-    const formData = new FormData(form);
-    const data: Schedule = Object.fromEntries(formData);
-    const { k, out } = data;
+    const formData = new FormData(form);    
+    const outRaw = new Date(formData.get("out")?.toString() ?? '');    
+    const out = outRaw ? new Date(outRaw.getTime()- 5 * 60 * 60 * 1000) : new Date();     
+    
+    if (out && isNaN(out.getTime())) {
+      console.error(
+        "El valor proporcionado para 'out' no es una fecha válida."
+      );
+      return; 
+    }    
     await updateTeacher({ in: today, out }, id);
     console.log("Schedule updated successfully");
   };

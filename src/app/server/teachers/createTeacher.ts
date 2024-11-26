@@ -1,6 +1,6 @@
 import { Schedule } from "@/app/models/schedule.model";
 
-export interface TeacherM{
+export interface TeacherM{    
     id: string;
     nit: string;
     name: string;
